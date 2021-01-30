@@ -5,6 +5,7 @@ from processor import respond
 from slackeventsapi import SlackEventAdapter
 import os
 from threading import Thread
+import sys
 
 app = Flask(__name__)
 
@@ -16,19 +17,13 @@ def handle_message(request):
         json_dict = json.loads(request.body.decode("utf-8"))
         
 
-@app.route('/')
-def event_hook(request):
-    app.logger.info(request.method)
-    json_dict = json.loads(request.body.decode("utf-8"))
-    if json_dict["token"] != VERIFICATION_TOKEN:
-        return {"status": 403}
-
-    if "type" in json_dict:
-        if json_dict["type"] == "url_verification":
-            response_dict = {"challenge": json_dict["challenge"]}
-            return response_dict
-    return {"status": 500}
-    return
+@app.route('/', methods=['POST'])
+def event_hook():
+    incoming_msg = request.values.get('Body', '').lower()
+    app.logger.warning(incoming_msg)
+    print(incoming_msg, file=sys.stderr)
+    resp = "challenge"
+    return str(resp)
 
 @app.route('/bot', methods=['POST'])
 def bot():
