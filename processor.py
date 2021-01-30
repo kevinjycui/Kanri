@@ -10,8 +10,13 @@ f = open('sample.txt', 'r', errors='ignore')
 
 raw = f.read().lower()
 
+nltk.download('brown')
+
 nltk.download('punkt')
 nltk.download('wordnet')
+
+nltk.download('averaged_perceptron_tagger')
+nltk.download('universal_tagset')
 
 sent_tokens = nltk.sent_tokenize(raw)
 word_tokens = nltk.word_tokenize(raw)
@@ -26,19 +31,34 @@ remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 def LemNormalize(text):
     return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
+ps = nltk.PorterStemmer()
+
+def StemTokens(tokens):
+    return [ps.stem(token) for token in tokens]
+
+def Tokenizer(text):
+    return StemTokens(LemNormalize(text))
+
 GREETING_INPUTS = ('hello', 'hi', 'greetings', 'hey')
 GREETING_RESPONSES = ('hello', 'hi', 'greetings', 'hey')
 
 def greeting(sentence):
     for word in sentence.split():
         if word.lower() in GREETING_INPUTS:
-            return random.choice(GREETING_RESPONSES)
+           return random.choice(GREETING_RESPONSES)
 
 def respond(user_response):
-    response = ''
-    sent_tokens.append(user_response)
+    global sent_tokens, word_tokens
 
-    TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
+    user_word_tokens = nltk.word_tokenize(user_response)
+    # print(nltk.pos_tag(user_word_tokens, tagset='universal'))
+
+    response = ''
+    user_response = user_response.lower()
+    sent_tokens += nltk.sent_tokenize(user_response)
+    word_tokens += nltk.word_tokenize(user_response)
+
+    TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
     tfidf = TfidfVec.fit_transform(sent_tokens)
     vals = cosine_similarity(tfidf[-1], tfidf)
     idx = vals.argsort()[0][-2]
@@ -47,7 +67,7 @@ def respond(user_response):
     req_tfidf = flat[-2]
 
     if (req_tfidf == 0):
-        response += 'Sorry, I don\'t understand... can you rephrase that?'
+        response += 'Good to know'
     else:
         response += sent_tokens[idx]
     return response
@@ -71,7 +91,6 @@ if __name__ == '__main__':
                 botprint(greeting_response)
             else:
                 botprint(respond(user_input))
-                sent_tokens.remove(user_input)
         else:
             flag = False
             botprint(BYE_MESSAGE)
