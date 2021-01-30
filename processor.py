@@ -59,11 +59,18 @@ def respond(user_response):
 
     response = ''
     user_response = user_response.lower()
-    if("?" in user_response):
+    hasNGword = False;
+    ng_word_list = ["who","why","what","where","when","how","?"]
+    for word in ng_word_list:
+        if(word in user_response):
+            hasNGword = True
+    if(hasNGword):
+        print("hasNGword")
         pass
     else:
         sent_tokens += nltk.sent_tokenize(user_response)
         word_tokens += nltk.word_tokenize(user_response)
+
 
     TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
     tfidf = TfidfVec.fit_transform(sent_tokens)
