@@ -52,26 +52,27 @@ def respond(user_response):
         response += sent_tokens[idx]
     return response
 
-def botprint(response):
-    print('Bot: %s' % response)
+if __name__ == '__main__':
+    def botprint(response):
+        print('Bot: %s' % response)
 
-INTRODUCTION = 'Hello! I am a personal chatbot. Ask me about anything!'
-BYE_MESSAGE = 'Goodbye! Thanks for chatting!'
+    INTRODUCTION = 'Hello! I am a personal chatbot. Ask me about anything!'
+    BYE_MESSAGE = 'Goodbye! Thanks for chatting!'
 
-flag = True
+    flag = True
 
-botprint(INTRODUCTION)
+    botprint(INTRODUCTION)
 
-while flag:
-    user_input = input().lower()
-    if user_input != 'bye':
-        greeting_response = greeting(user_input)
-        if greeting_response is not None:
-            botprint(greeting_response)
+    while flag:
+        user_input = input().lower()
+        if user_input != 'bye':
+            greeting_response = greeting(user_input)
+            if greeting_response is not None:
+                botprint(greeting_response)
+            else:
+                botprint(respond(user_input))
+                sent_tokens.remove(user_input)
         else:
-            botprint(respond(user_input))
-            sent_tokens.remove(user_input)
-    else:
-        flag = False
-        botprint(BYE_MESSAGE)
+            flag = False
+            botprint(BYE_MESSAGE)
 
