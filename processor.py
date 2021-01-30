@@ -4,11 +4,7 @@ import random
 import string
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from slackclient import SlackClient
 
-SLACK_TOKEN = 'xoxb-1694387543250-1718543035664-OAr4r4vH0vGN4WJeobfXc8h1'
-
-slack_client = SlackClient(SLACK_TOKEN)
 
 f = open('sample.txt', 'r', errors='ignore')
 
@@ -59,17 +55,9 @@ def respond(user_response):
 
     response = ''
     user_response = user_response.lower()
-    hasNGword = False;
-    ng_word_list = ["who","why","what","where","when","how","?"]
-    for word in ng_word_list:
-        if(word in user_response):
-            hasNGword = True
-    if(hasNGword):
-        print("hasNGword")
-        pass
-    else:
-        sent_tokens += nltk.sent_tokenize(user_response)
-        word_tokens += nltk.word_tokenize(user_response)
+
+    sent_tokens += nltk.sent_tokenize(user_response)
+    word_tokens += nltk.word_tokenize(user_response)
 
 
     TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
@@ -86,12 +74,6 @@ def respond(user_response):
         response += sent_tokens[idx]
     return response
 
-def list_channels():
-    channels_call = slack_client.api_call("conversations.list")
-    if channels_call.get('ok'):
-        return channels_call['channels']
-    return None
-
 if __name__ == '__main__':
     def botprint(response):
         print('Bot: %s' % response)
@@ -100,15 +82,6 @@ if __name__ == '__main__':
     BYE_MESSAGE = 'Goodbye! Thanks for chatting!'
 
     flag = True
-
-    channels = list_channels()
-    print(SLACK_TOKEN)
-    if channels:
-        print("Channels: ")
-        for c in channels:
-            print(c['name'] + " (" + c['id'] + ")")
-    else:
-        print("Unable to authenticate.")
 
     botprint(INTRODUCTION)
 

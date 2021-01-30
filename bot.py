@@ -2,33 +2,37 @@ from flask import Flask, request, Response
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
 from processor import respond
-from slackeventsapi import SlackEventAdapter
 import os
 from threading import Thread
+import json
+import os
+from dotenv import load_dotenv
+from slack-util import SlackClientHandler
+
+load_dotenv()
+SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
+SLACK_VERIFICATION_TOKEN = os.getenv('VERIFICATION_TOKEN')
+
+slackClientHander = SlackClientHandler()
 
 app = Flask(__name__)
-
-slack_events_adapter = SlackEventAdapter("20f2f470e8cee9a57c03515479effe40", "/slack/events", app)
-
-@slack_events_adapter.on("url_request")
-def handle_message(request):
-        app.logger.info(request.method)
-        json_dict = json.loads(request.body.decode("utf-8"))
         
 
-@app.route('/')
-def event_hook(request):
-    app.logger.info(request.method)
-    json_dict = json.loads(request.body.decode("utf-8"))
-    if json_dict["token"] != VERIFICATION_TOKEN:
+@app.route('/slack', methods=['POST'])
+def event_hook():
+    json_dict = request.get_json()
+    app.logger.info(json_dict)
+
+    if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
         return {"status": 403}
 
     if "type" in json_dict:
         if json_dict["type"] == "url_verification":
             response_dict = {"challenge": json_dict["challenge"]}
             return response_dict
+
+
     return {"status": 500}
-    return
 
 @app.route('/bot', methods=['POST'])
 def bot():
