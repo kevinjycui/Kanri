@@ -4,6 +4,7 @@ import random
 import string
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from slackclient import SlackClient
 
 
 f = open('sample.txt', 'r', errors='ignore')
