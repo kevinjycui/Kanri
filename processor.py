@@ -55,8 +55,11 @@ def respond(user_response):
 
     response = ''
     user_response = user_response.lower()
-    sent_tokens += nltk.sent_tokenize(user_response)
-    word_tokens += nltk.word_tokenize(user_response)
+    if("?" in user_response):
+        pass
+    else:
+        sent_tokens += nltk.sent_tokenize(user_response)
+        word_tokens += nltk.word_tokenize(user_response)
 
     TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
     tfidf = TfidfVec.fit_transform(sent_tokens)
