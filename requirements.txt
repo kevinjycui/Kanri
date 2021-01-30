@@ -22,3 +22,4 @@ twilio==6.51.1
 urllib3==1.26.3
 Werkzeug==1.0.1
 slackclient==1.0.0
+slackeventsapi==2.2.1
