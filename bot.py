@@ -7,13 +7,13 @@ from threading import Thread
 import json
 import os
 from dotenv import load_dotenv
-from slack-util import SlackClientHandler
+from slack_util import SlackClientHandler
 
 load_dotenv()
 SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
 SLACK_VERIFICATION_TOKEN = os.getenv('VERIFICATION_TOKEN')
 
-slackClientHander = SlackClientHandler()
+slackClientHandler = SlackClientHandler(SLACK_TOKEN)
 
 app = Flask(__name__)
         
@@ -26,11 +26,14 @@ def event_hook():
     if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
         return {"status": 403}
 
-    if "type" in json_dict:
-        if json_dict["type"] == "url_verification":
+    if "type" in json_dict and json_dict["type"] == "url_verification":
             response_dict = {"challenge": json_dict["challenge"]}
             return response_dict
 
+    elif "event" in json_dict and "type" in json_dict["event"]:
+        if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
+            slackClientHandler.send_message(respond(json_dict["event"]["text"]), json_dict["event"]["channel"])
+            return {"status": 201}
 
     return {"status": 500}
 
