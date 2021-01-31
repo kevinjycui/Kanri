@@ -5,6 +5,8 @@ import string
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from nlp import StanfordNLPHandler
+
 
 f = open('sample.txt', 'r', errors='ignore')
 
@@ -42,23 +44,38 @@ def Tokenizer(text):
 GREETING_INPUTS = ('hello', 'hi', 'greetings', 'hey')
 GREETING_RESPONSES = ('hello', 'hi', 'greetings', 'hey')
 
+MISC_RESPONSES = ('Good to know', 'I\'m not quite sure I understand', 'OK, I\'ll keep that in mind', 'Interesting')
+
+stanfordNLPHandler = StanfordNLPHandler()
+
 def greeting(sentence):
     for word in sentence.split():
         if word.lower() in GREETING_INPUTS:
            return random.choice(GREETING_RESPONSES)
 
 def respond(user_response):
-    global sent_tokens, word_tokens
+    global sent_tokens
 
     user_word_tokens = nltk.word_tokenize(user_response)
-    # print(nltk.pos_tag(user_word_tokens, tagset='universal'))
 
     response = ''
     user_response = user_response.lower()
 
-    sent_tokens += nltk.sent_tokenize(user_response)
-    word_tokens += nltk.word_tokenize(user_response)
+    user_sent_tokens = nltk.sent_tokenize(user_response)
+    sent_tokens += user_sent_tokens
 
+    questions = []
+
+    for user_sent_token in user_sent_tokens:
+        is_question = stanfordNLPHandler.is_question(user_sent_token)
+        if is_question:
+            questions.append(user_sent_token)
+        sent_response = stanfordNLPHandler.analyze(user_sent_token, is_question=is_question)
+        if sent_response not in response:
+            response += sent_response
+
+    if response != '':
+        response = 'OK I\'ll note that down. ' + response
 
     TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
     tfidf = TfidfVec.fit_transform(sent_tokens)
@@ -68,10 +85,14 @@ def respond(user_response):
     flat.sort()
     req_tfidf = flat[-2]
 
-    if (req_tfidf == 0):
-        response += 'Good to know'
-    else:
-        response += sent_tokens[idx]
+    if response == '' and (req_tfidf == 0):
+        response += random.choice(MISC_RESPONSES)
+    elif sent_tokens[idx] not in response:
+        response += stanfordNLPHandler.set_capitals(sent_tokens[idx])
+
+    for sent_token in questions:
+        sent_tokens.remove(sent_token)
+
     return response
 
 if __name__ == '__main__':

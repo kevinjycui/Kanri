@@ -1,1 +1,1 @@
-mcgill is a university. the earth is a planet. my name is kevin. there is a country called canada which is far away from japan.
+A chatbot is a bot that chats with you! I am a chatbot. You are a user. McGill University is a public research university in Montreal, Canada. McHacks is an annual hackathon hosted by McGill. I am a product of the McHacks hackathon and was developed by Kevin Cui and Nick Stewart. I use the NLTK and Stanford NLP libraries to understand what you say.

@@ -23,6 +23,7 @@ slack-sdk==3.2.1
 slackclient==1.0.0
 slackeventsapi==2.2.1
 stanfordnlp==0.2.0
+stanza==1.2
 threadpoolctl==2.1.0
 torch==1.7.1
 tqdm==4.56.0

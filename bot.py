@@ -1,13 +1,14 @@
 from flask import Flask, request, Response
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
-from processor import respond
+from nlphandler import respond
 import os
 from threading import Thread
 import json
 import os
 from dotenv import load_dotenv
 from slack_util import SlackClientHandler
+
 
 load_dotenv()
 SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
@@ -27,8 +28,8 @@ def event_hook():
         return {"status": 403}
 
     if "type" in json_dict and json_dict["type"] == "url_verification":
-            response_dict = {"challenge": json_dict["challenge"]}
-            return response_dict
+        response_dict = {"challenge": json_dict["challenge"]}
+        return response_dict
 
     elif "event" in json_dict and "type" in json_dict["event"]:
         if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
