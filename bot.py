@@ -29,6 +29,8 @@ notify_second = 0
 
 
 def get_next_time():
+    global notify_hour, notify_minute, notify_second
+    
     x=datetime.today()
     y = x.replace(day=x.day, hour=notify_hour, minute=notify_minute, second=notify_second, microsecond=0)
     
@@ -48,6 +50,8 @@ t = Timer(get_next_time(), send_morning_message)
 t.start()
 
 def set_new_time(h, m, s):
+    global t, notify_hour, notify_minute, notify_second
+
     notify_hour = h
     notify_minute = m
     notify_second = s
