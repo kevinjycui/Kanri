@@ -14,6 +14,13 @@ class SlackClientHandler:
             return channels_call['channels']
         return None
 
+    def get_user_id(self, idu):
+        users_call = self.client.api_call("uers.list")
+        if users_call.get('ok'):
+            for member in users_call['members']:
+                if member['id'] == idu:
+                    pass
+
     def send_message(self, message, channel='#general'):
         try:
             response = self.webclient.chat_postMessage(

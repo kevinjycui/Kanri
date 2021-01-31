@@ -1,3 +1,4 @@
+beautifulsoup4==4.9.3
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
@@ -10,6 +11,7 @@ MarkupSafe==1.1.1
 nltk==3.5
 numpy==1.19.5
 protobuf==3.14.0
+pycorenlp==0.3.0
 pyee==7.0.4
 PyJWT==1.7.1
 python-dotenv==0.15.0
@@ -22,6 +24,7 @@ six==1.15.0
 slack-sdk==3.2.1
 slackclient==1.0.0
 slackeventsapi==2.2.1
+soupsieve==2.1
 stanfordnlp==0.2.0
 stanza==1.2
 threadpoolctl==2.1.0
@@ -32,3 +35,4 @@ typing-extensions==3.7.4.3
 urllib3==1.26.3
 websocket-client==0.57.0
 Werkzeug==1.0.1
+wikipedia==1.4.0

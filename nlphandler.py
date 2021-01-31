@@ -41,8 +41,8 @@ def StemTokens(tokens):
 def Tokenizer(text):
     return StemTokens(LemNormalize(text))
 
-GREETING_INPUTS = ('hello', 'hi', 'greetings', 'hey')
-GREETING_RESPONSES = ('hello', 'hi', 'greetings', 'hey')
+GREETING_INPUTS = ('hello', 'hi', 'greetings', 'hey', 'howdy', 'heya', 'salutations',' sup', 'what\'s up')
+GREETING_RESPONSES = ('Hello', 'Hi', 'Greetings', 'Hey')
 
 MISC_RESPONSES = ('Good to know', 'I\'m not quite sure I understand', 'OK, I\'ll keep that in mind', 'Interesting')
 
@@ -78,7 +78,7 @@ def respond(user_response):
         if sent_response not in response:
             response += sent_response
 
-    if response != '':
+    if len(questions) == 0 and response != '':
         response = 'OK I\'ll note that down. ' + response
 
     TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
@@ -91,7 +91,7 @@ def respond(user_response):
 
     if response == '' and (req_tfidf == 0):
         response += random.choice(MISC_RESPONSES)
-    elif sent_tokens[idx] not in response:
+    elif sent_tokens[idx].lower() not in response.lower():
         response += stanfordNLPHandler.set_capitals(sent_tokens[idx])
 
     for sent_token in questions:
