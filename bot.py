@@ -22,28 +22,36 @@ app = Flask(__name__)
         
 
 @app.route('/slack', methods=['POST'])
-def event_hook():
+def slack_event_hook():
     json_dict = request.get_json()
     app.logger.info(json_dict)
 
-    if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
-        return {"status": 403}
+    try:
 
-    if "type" in json_dict and json_dict["type"] == "url_verification":
-        response_dict = {"challenge": json_dict["challenge"]}
-        return response_dict
+        if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
+            return {"status": 403}
 
-    elif "event" in json_dict and "type" in json_dict["event"]:
-        if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
-            slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
-            return {"status": 201}
-        elif json_dict["event"]["type"] == "user_change":
-            slackClientHandler.send_message(statusChange(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]))
-            slackClientHandler.send_message(getUserStatuses())
-            return {"status": 201}
-            #event user profile status_text
+        if "type" in json_dict and json_dict["type"] == "url_verification":
+            response_dict = {"challenge": json_dict["challenge"]}
+            return response_dict
 
-    return {"status": 500}
+        elif "event" in json_dict and "type" in json_dict["event"]:
+            if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
+                slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
+                return {"status": 201}
+            elif json_dict["event"]["type"] == "user_change":
+                slackClientHandler.send_message(statusChange(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]))
+                slackClientHandler.send_message(getUserStatuses())
+                return {"status": 201}
+                #event user profile status_text
+    except:
+        return {"status": 500}
+
+@app.route('/discord', methods=['POST'])
+def discord_event_hook():
+    json_dict = request.get_json()
+    response = respond(json_dict["text"], json_dict["user"])
+    return {"status": 201, "response": response}
 
 @app.route('/bot', methods=['POST'])
 def bot():
