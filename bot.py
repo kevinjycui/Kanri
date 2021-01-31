@@ -13,8 +13,8 @@ from datetime import datetime, timedelta
 from threading import Timer
 
 # comment out when debug mode
-os.environ.pop("FLASK_APP")
-os.environ.pop("FLASK_ENV")
+# os.environ.pop("FLASK_APP")
+# os.environ.pop("FLASK_ENV")
 
 load_dotenv()
 SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
@@ -30,7 +30,6 @@ def set_new_time(h, m, s):
     notify_hour = h
     notify_minute = m
     notify_second = s
-
 
 def get_next_time():
     x=datetime.today()
@@ -79,11 +78,21 @@ def slack_event_hook():
     except:
         return {"status": 500}
 
-@app.route('/discord', methods=['POST'])
-def discord_event_hook():
-    json_dict = request.get_json()
-    response = respond(json_dict["text"], json_dict["user"])
-    return {"status": 201, "response": response}
+@app.route('/morning', methods=['POST'])
+def morning_event_hook():
+    try:
+        params = list(map(int, request.values.get('text', '').split(' ')))
+        assert len(params) <= 3
+        while len(params) < 3:
+            params.append(0)
+
+        set_new_time(params[0], params[1], params[2])
+        assert params[0] >= 0 and params[0] < 24
+        assert params[1] >= 0 and params[1] < 60
+        assert params[2] >= 0 and params[2] < 60
+        return 'New morning time set to %d:%d:%d. You will receive a standup announcement at this time.' % (str(params[0]).zfill(2), str(params[1]).zfill(2), str(params[2]).zfill(2))
+    except:
+        return 'Failed to set new time, please use format /morning h m s'
 
 @app.route('/bot', methods=['POST'])
 def bot():
