@@ -41,10 +41,11 @@ def event_hook():
             slackClientHandler.send_message(respond(json_dict["event"]["text"]), json_dict["event"]["channel"])
             return {"status": 201}
 
-    elif "type" in json_dict and json_dict["type"] == "user_change":
+    elif "event" in json_dict and "type" in json_dict["event"]:
+        if json_dict["event"]["type"] == "user_change":
         #slackClientHandler.send_message(sendStatusChangeMessage(json_dict["event"]["user"]["profile"]["status_text"]))
-        slackClientHandler.send_message("test")
-        return {"status": 201}
+            slackClientHandler.send_message("test")
+            return {"status": 201}
         #event user profile status_text
 
     return {"status": 500}
