@@ -16,6 +16,11 @@ SLACK_VERIFICATION_TOKEN = os.getenv('VERIFICATION_TOKEN')
 
 slackClientHandler = SlackClientHandler(SLACK_TOKEN)
 
+def sendStatusChangeMessage(newStatus):
+    response = "got status: " + newStatus
+    return response
+    
+
 app = Flask(__name__)
         
 
@@ -37,7 +42,10 @@ def event_hook():
             return {"status": 201}
 
     elif "type" in json_dict and json_dict["type"] == "user_change":
-        pass # do something with json_dict if user status change
+        #slackClientHandler.send_message(sendStatusChangeMessage(json_dict["event"]["user"]["profile"]["status_text"]))
+        slackClientHandler.send_message("test")
+        return {"status": 201}
+        #event user profile status_text
 
     return {"status": 500}
 
