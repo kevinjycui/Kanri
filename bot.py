@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
 from nlphandler import respond
+from status import sendStatusChangeMessage
 import os
 from threading import Thread
 import json
@@ -15,10 +16,6 @@ SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
 SLACK_VERIFICATION_TOKEN = os.getenv('VERIFICATION_TOKEN')
 
 slackClientHandler = SlackClientHandler(SLACK_TOKEN)
-
-def sendStatusChangeMessage(newStatus):
-    response = "got status: " + newStatus
-    return response
     
 
 app = Flask(__name__)
@@ -41,8 +38,8 @@ def event_hook():
             slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
             return {"status": 201}
         elif json_dict["event"]["type"] == "user_change":
-            #slackClientHandler.send_message(sendStatusChangeMessage(json_dict["event"]["user"]["profile"]["status_text"]))
-            slackClientHandler.send_message("test")
+            slackClientHandler.send_message(sendStatusChangeMessage(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]))
+            #slackClientHandler.send_message("test")
             return {"status": 201}
             #event user profile status_text
 

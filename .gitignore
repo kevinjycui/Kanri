@@ -3,4 +3,12 @@ __pycache__/
 
 *env/
 
+.DS_Store
+.gitignore
+ngrok
+
+
+lib/
+bin/
+
 .env
