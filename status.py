@@ -1,16 +1,14 @@
 from nlp import Entity
 
-userStatuses = {}
+userStatuses = []
 
 
 def statusChange(newStatus, userName):
     response = ''
-    userStatuses[userName] = newStatus
 
-    if newStatus == "In a meeting":
-        response = userName + " is now in a meeting."
-    else:
-        response = userName + " is now " + newStatus
+    #userStatuses[userName] = newStatus
+
+    response = userName + " is now " + newStatus
     return response
 
 def getUserStatuses():
