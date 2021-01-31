@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
 from nlphandler import respond
+from status import sendStatusChangeMessage
 import os
 from threading import Thread
 import json
@@ -15,15 +16,6 @@ SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
 SLACK_VERIFICATION_TOKEN = os.getenv('VERIFICATION_TOKEN')
 
 slackClientHandler = SlackClientHandler(SLACK_TOKEN)
-
-def sendStatusChangeMessage(newStatus, userName):
-    response = ''
-
-    if newStatus == "In a meeting":
-        response = userName + " is now in a meeting."
-    else:
-        response = userName + " is now " + newStatus
-    return response
     
 
 app = Flask(__name__)
