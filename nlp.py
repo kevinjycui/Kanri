@@ -8,7 +8,7 @@ nlp = stanza.Pipeline('en')
 corenlp = StanfordCoreNLP('http://localhost:9000')
 
 class Entity:
-    def __init__(self, name, typex, status):
+    def __init__(self, name, typex, status=None):
         self.name = name
         self.type = typex
         self.contexts = []

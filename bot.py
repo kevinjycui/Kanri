@@ -67,25 +67,24 @@ def slack_event_hook():
     json_dict = request.get_json()
     app.logger.info(json_dict)
 
-    try:
-        if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
-            return {"status": 403}
+    if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
+        return {"status": 403}
 
-        if "type" in json_dict and json_dict["type"] == "url_verification":
-            response_dict = {"challenge": json_dict["challenge"]}
-            return response_dict
+    if "type" in json_dict and json_dict["type"] == "url_verification":
+        response_dict = {"challenge": json_dict["challenge"]}
+        return response_dict
 
-        elif "event" in json_dict and "type" in json_dict["event"]:
-            if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
-                slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
-                return {"status": 201}
-            elif json_dict["event"]["type"] == "user_change":
-                send_morning_message()
-                slackClientHandler.send_message(statusChange(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]), "C01LBJ5NDM3")
-                return {"status": 201}
-                #event user profile status_text
-    except:
-        return {"status": 500}
+    elif "event" in json_dict and "type" in json_dict["event"]:
+        if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
+            slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
+            return {"status": 201}
+        elif json_dict["event"]["type"] == "user_change":
+            send_morning_message()
+            slackClientHandler.send_message(statusChange(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]), "C01LBJ5NDM3")
+            return {"status": 201}
+            #event user profile status_text
+
+    return {"status": 500}
 
 @app.route('/morning', methods=['POST'])
 def morning_event_hook():
@@ -103,6 +102,7 @@ def morning_event_hook():
     except Exception as e:
         print(e)
         return 'Failed to set new time, please use format /morning h m s'
+    return {"status": 201}
 
 @app.route('/bot', methods=['POST'])
 def bot():
