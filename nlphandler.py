@@ -79,7 +79,7 @@ def respond(user_response, author=None):
         if sent_response not in response:
             response += sent_response
 
-    if len(questions) == 0 and response != '':
+    if len(questions) < len(user_sent_tokens) and response != '':
         response = 'OK I\'ll note that down. ' + response
 
     TfidfVec = TfidfVectorizer(tokenizer=Tokenizer, stop_words='english')
