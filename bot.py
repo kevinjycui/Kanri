@@ -26,13 +26,7 @@ notify_hour = 8
 notify_minute = 0
 notify_second = 0
 
-def set_new_time(h, m, s):
-    notify_hour = h
-    notify_minute = m
-    notify_second = s
-    t.cancel()
-    t = Timer(get_next_time(), send_morning_message)
-    t.start()
+
 
 def get_next_time():
     x=datetime.today()
@@ -52,6 +46,14 @@ def send_morning_message():
 
 t = Timer(get_next_time(), send_morning_message)
 t.start()
+
+def set_new_time(h, m, s):
+    notify_hour = h
+    notify_minute = m
+    notify_second = s
+    t.cancel()
+    t = Timer(get_next_time(), send_morning_message)
+    t.start()
 
 app = Flask(__name__)
         
