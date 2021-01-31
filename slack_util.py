@@ -21,7 +21,7 @@ class SlackClientHandler:
         if users_call.get('ok'):
             for member in users_call['members']:
                 if member['id'] == idu:
-                    return member.get('display_name', member['real_name']).split()[0]
+                    return member.get('display_name', member['real_name'])
 
     def send_message(self, message, channel='#general'):
         try:
