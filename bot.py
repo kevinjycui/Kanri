@@ -93,8 +93,9 @@ def morning_event_hook():
         assert params[0] >= 0 and params[0] < 24
         assert params[1] >= 0 and params[1] < 60
         assert params[2] >= 0 and params[2] < 60
-        return 'New morning time set to %d:%d:%d. You will receive a standup announcement at this time.' % (str(params[0]).zfill(2), str(params[1]).zfill(2), str(params[2]).zfill(2))
-    except:
+        return 'New morning time set to %d:%d:%d. You will receive a standup announcement at this time.' % tuple(params)
+    except Exception as e:
+        print(e)
         return 'Failed to set new time, please use format /morning h m s'
 
 @app.route('/bot', methods=['POST'])
