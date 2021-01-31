@@ -14,15 +14,15 @@ class StanfordNLPHandler:
 
     def analyze(self, sentence, is_question=False):
         doc = nlp(sentence)
+        results = self.mem(doc)
+        if not is_question and sentence not in results:
+            results += sentence + '. '
         if not is_question:
             for entity in doc.entities:
                 if entity.type == 'DATE' or entity.type == 'TIME':
                     self.datetimes[entity.text] = self.datetimes.get(entity.text, []) + [sentence]
                 elif entity.type == 'PERSON':
                     self.people[entity.text] = self.people.get(entity.text, []) + [sentence]
-        results = self.mem(doc)
-        if not is_question and sentence not in results:
-            results += sentence + '. '
         if results == '':
             return ''
         return self.set_capitals(results)

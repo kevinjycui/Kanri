@@ -64,6 +64,10 @@ def respond(user_response):
     user_sent_tokens = nltk.sent_tokenize(user_response)
     sent_tokens += user_sent_tokens
 
+    greeting_response = greeting(user_response)
+    if greeting_response is not None:
+        return greeting_response
+
     questions = []
 
     for user_sent_token in user_sent_tokens:

@@ -36,6 +36,9 @@ def event_hook():
             slackClientHandler.send_message(respond(json_dict["event"]["text"]), json_dict["event"]["channel"])
             return {"status": 201}
 
+    elif "type" in json_dict and json_dict["type"] == "user_change":
+        pass # do something with json_dict if user status change
+
     return {"status": 500}
 
 @app.route('/bot', methods=['POST'])
