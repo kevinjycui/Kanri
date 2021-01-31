@@ -21,10 +21,20 @@ SLACK_TOKEN = os.getenv('SLACK_API_TOKEN')
 SLACK_VERIFICATION_TOKEN = os.getenv('VERIFICATION_TOKEN')
 
 slackClientHandler = SlackClientHandler(SLACK_TOKEN)
-    
+
+notify_hour = 8
+notify_minute = 0
+notify_second = 0
+
+def set_new_time(h, m, s):
+    notify_hour = h
+    notify_minute = m
+    notify_second = s
+
+
 def get_next_time():
     x=datetime.today()
-    y = x.replace(day=x.day, hour=21, minute=37, second=0, microsecond=0)
+    y = x.replace(day=x.day, hour=notify_hour, minute=notify_minute, second=notify_second, microsecond=0)
     
     if y < x:
         y += timedelta(days=1)
@@ -50,10 +60,8 @@ def slack_event_hook():
     app.logger.info(json_dict)
 
     try:
-
         if json_dict["token"] != SLACK_VERIFICATION_TOKEN:
             return {"status": 403}
-
 
         if "type" in json_dict and json_dict["type"] == "url_verification":
             response_dict = {"challenge": json_dict["challenge"]}
@@ -65,17 +73,6 @@ def slack_event_hook():
                 return {"status": 201}
             elif json_dict["event"]["type"] == "user_change":
                 slackClientHandler.send_message(statusChange(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]))
-                return {"status": 201}
-                #event user profile status_text
-
-
-        elif "event" in json_dict and "type" in json_dict["event"]:
-            if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
-                slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
-                return {"status": 201}
-            elif json_dict["event"]["type"] == "user_change":
-                slackClientHandler.send_message(statusChange(json_dict["event"]["user"]["profile"]["status_text"],json_dict["event"]["user"]["profile"]["real_name_normalized"]))
-                slackClientHandler.send_message(getUserStatuses())
                 return {"status": 201}
                 #event user profile status_text
     except:
