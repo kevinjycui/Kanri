@@ -7,19 +7,19 @@ stanza.download('en')
 nlp = stanza.Pipeline('en')
 corenlp = StanfordCoreNLP('http://localhost:9000')
 
-
 class Entity:
-    def __init__(self, name, typex):
+    def __init__(self, name, typex, status):
         self.name = name
         self.type = typex
         self.contexts = []
+        self.status = status
 
     def add_context(self, context):
         if context not in self.contexts:
             self.contexts.append(context)
 
     def __str__(self):
-        return self.name + ', ' + self.type + '\n'
+        return self.name + ', ' + self.type + ', ' + self.status + '\n'
 
 
 class StanfordNLPHandler:
