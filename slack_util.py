@@ -15,11 +15,13 @@ class SlackClientHandler:
         return None
 
     def get_user_id(self, idu):
+        if idu is None:
+            return None
         users_call = self.client.api_call("uers.list")
         if users_call.get('ok'):
             for member in users_call['members']:
                 if member['id'] == idu:
-                    pass
+                    return member.get('display_name', member['real_name']).split()[0]
 
     def send_message(self, message, channel='#general'):
         try:

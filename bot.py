@@ -33,7 +33,7 @@ def event_hook():
 
     elif "event" in json_dict and "type" in json_dict["event"]:
         if json_dict["event"]["type"] == "message" and 'bot_id' not in json_dict['event']:
-            slackClientHandler.send_message(respond(json_dict["event"]["text"]), json_dict["event"]["channel"])
+            slackClientHandler.send_message(respond(json_dict["event"]["text"], slackClientHandler.get_user_id(json_dict["event"]["user"])), json_dict["event"]["channel"])
             return {"status": 201}
 
     elif "type" in json_dict and json_dict["type"] == "user_change":

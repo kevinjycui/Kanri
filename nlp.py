@@ -12,7 +12,7 @@ class StanfordNLPHandler:
         self.people = {}
         self.datetimes = {}
 
-    def analyze(self, sentence, is_question=False):
+    def analyze(self, sentence, is_question=False, author=None):
         doc = nlp(sentence)
         results = self.mem(doc)
         if not is_question and sentence not in results:
@@ -23,6 +23,9 @@ class StanfordNLPHandler:
                     self.datetimes[entity.text] = self.datetimes.get(entity.text, []) + [sentence]
                 elif entity.type == 'PERSON':
                     self.people[entity.text] = self.people.get(entity.text, []) + [sentence]
+            if author is not None:
+                author = author.lower()
+                self.people[author] = self.people.get(author, []) + [sentence]
         if results == '':
             return ''
         return self.set_capitals(results)

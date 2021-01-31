@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from nlp import StanfordNLPHandler
+from slack_util import SlackClientHandler
 
 
 f = open('sample.txt', 'r', errors='ignore')
@@ -53,7 +54,7 @@ def greeting(sentence):
         if word.lower() in GREETING_INPUTS:
            return random.choice(GREETING_RESPONSES)
 
-def respond(user_response):
+def respond(user_response, author=None):
     global sent_tokens
 
     user_word_tokens = nltk.word_tokenize(user_response)
@@ -74,7 +75,7 @@ def respond(user_response):
         is_question = stanfordNLPHandler.is_question(user_sent_token)
         if is_question:
             questions.append(user_sent_token)
-        sent_response = stanfordNLPHandler.analyze(user_sent_token, is_question=is_question)
+        sent_response = stanfordNLPHandler.analyze(user_sent_token, is_question=is_question, author=author)
         if sent_response not in response:
             response += sent_response
 
