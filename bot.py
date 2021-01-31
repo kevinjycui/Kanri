@@ -30,6 +30,9 @@ def set_new_time(h, m, s):
     notify_hour = h
     notify_minute = m
     notify_second = s
+    t.cancel()
+    t = Timer(get_next_time(), send_morning_message)
+    t.start()
 
 def get_next_time():
     x=datetime.today()
